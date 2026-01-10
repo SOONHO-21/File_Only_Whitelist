@@ -15,10 +15,10 @@
     $content = $_POST["content"];
     $is_html = $_POST['is_html'] ?? 'n';		// HTML 쓰기
 
-    $subject = htmlspecialchars($subject, ENT_QUOTES);  // XSS 방어. HTML 특수문자 변환
+    $subject = htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');  // XSS 방어. HTML 특수문자 변환
 
     if($is_html !== 'y'){
-        $content = htmlspecialchars($content, ENT_QUOTES);
+        $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
     }
 
     $regist_day = date("Y-m-d (H:i)");

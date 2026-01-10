@@ -23,9 +23,24 @@
     $email = $row["email"];
     $profile_img = $row['profile_img'];
     $regist_day = date("Y-m-d (H:i)");
+
+    unset($_SESSION['csrf_token']);     // 다음 요청 때 CSRF Token 갱신을 위해 폐기
+
+    function generateCSRFToken() {
+        if(!isset($_SESSION['csrf_token'])) {   // 요청마다 CSRF 토큰 갱신
+            $token = bin2hex(random_bytes(32));
+            $_SESSION['csrf_token'] = $token;
+        }
+        return $token;
+    }
 ?>
 <script>
     function check_input(){
+        // if(!document.member.current_pass.value) {    // 현재 비밀번호 확인 프론트엔드 로직
+        //     alert("현재 비밀번호를 입력하세요!");
+        //     document.member.current_pass.focus();
+        //     return;
+        // }
         if(!document.member.pass.value) {
             alert("비밀번호를 입력하세요!");
             document.member.pass.focus();
@@ -72,41 +87,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <body> 
     <form name="member" action="modify.php?id=<?=$userid?>" method="post" enctype="multipart/form-data">
-		<h2>회원 정보 수정</h2>
-    	<ul class="list-group">
-            <li class="list-group-item">
-                <span class="badge bg-secondary">아이디</span>
-                <span><?=$userid?></span>
-            </li>
-            <li class="list-group-item">
-                <span class="badge bg-secondary">비밀번호</span>
-                <span><input type="password" name="pass"></span>
-            </li>
-            <li class="list-group-item">
-                <span class="badge bg-secondary">비밀번호 확인</span>
-                <span><input type="password" name="pass_confirm"></span>
-            </li>
-            <li class="list-group-item">
-                <span class="badge bg-secondary">이름</span>
-                <span><input type="text" name="name" value=<?=$name?>></span>
-            </li>
-            <li class="list-group-item">
-                <span class="badge bg-secondary">이메일</span>
-                <span><input type="text" name="email" value=<?=$email?>></span>
-            </li>
-            <br><br>
-            <?php if ($profile_img) { ?>
-                <img src="./profile_upload/<?=$profile_img?>" width="220" height="150"><br>
-            <?php } else { ?>
-                <img src="../img/default_profile.png" width="220" height="150"><br>
-            <?php } ?>
-            <label>프로필 사진 변경:</label>
-            <input type="file" name="profile_img">
-        </ul>
-		<ul class="buttons">
-	        <li><button class="btn btn-primary" type="button" onclick="check_input()">저장하기</button></li>
-            <li><button class="btn btn-secondary" type="button" onclick="reset_form()">취소하기</button></li>
-        </ul>
+        <div class="board_form">
+            <h2>회원 정보 수정</h2>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge bg-secondary">아이디</span>
+                    <span><?=$userid?></span>
+                </li>
+                <!--현재 비밀번호 확인 프론트엔드 로직-->
+                <!-- <li class="list-group-item">
+                    <span class="badge bg-secondary">현재 비밀번호</span>
+                    <span><input type="password" name="current_pass"></span>
+                </li> -->
+                <li class="list-group-item">
+                    <span class="badge bg-secondary">비밀번호</span>
+                    <span><input type="password" name="pass"></span>
+                </li>
+                <li class="list-group-item">
+                    <span class="badge bg-secondary">비밀번호 확인</span>
+                    <span><input type="password" name="pass_confirm"></span>
+                </li>
+                <li class="list-group-item">
+                    <span class="badge bg-secondary">이름</span>
+                    <span><input type="text" name="name" value=<?=$name?>></span>
+                </li>
+                <li class="list-group-item">
+                    <span class="badge bg-secondary">이메일</span>
+                    <span><input type="text" name="email" value=<?=$email?>></span>
+                </li>
+                <!--csrf 토큰값 적용-->
+                <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                <br><br>
+                <?php if ($profile_img) { ?>
+                    <img src="./profile_upload/<?=$profile_img?>" width="220" height="150"><br>
+                <?php } else { ?>
+                    <img src="../img/default_profile.png" width="220" height="150"><br>
+                <?php } ?>
+                <label>프로필 사진 변경:</label>
+                <input type="file" name="profile_img">
+            </ul>
+            <ul class="buttons">
+                <li><button class="btn btn-primary" type="button" onclick="check_input()">저장하기</button></li>
+                <li><button class="btn btn-secondary" type="button" onclick="reset_form()">취소하기</button></li>
+            </ul>
+        </div>
     </form>
 </body>
 </html>
