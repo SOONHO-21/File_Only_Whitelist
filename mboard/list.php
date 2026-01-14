@@ -75,7 +75,6 @@
         $stmt = $con->prepare("SELECT * FROM board ORDER BY num DESC");
     }
 
-    // $result = mysqli_query($con, $sql);
     $stmt->execute();
     $result = $stmt->get_result();
     $total_record = mysqli_num_rows($result);   // 전체 글 수
@@ -109,7 +108,11 @@
         <li class="list-group-item">
             <span class="badge bg-secondary"><?=$number?></span>
             <span><a href="view.php?num=<?=$num?>&page=<?=$page?>"><?=$subject?></a></span>
-            <span class="badge bg-secondary"><?=$name?></span>
+            <span class="badge bg-secondary">
+                <a href="../member/profile.php?user=<?=$name?>">
+                    <?=$name?>
+                </a>
+            </span>
             <span><?=$file_image?></span>
             <span><?=$regist_day?></span>
         </li>

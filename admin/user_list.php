@@ -2,13 +2,14 @@
 include "../include/db_connect.php";
 include "admin_check.php";
 
-$sql = "SELECT num, id, name, email, level FROM _mem ORDER BY num ASC";
-$result = mysqli_query($con, $sql);
+$stmt = $con->prepare("SELECT num, id, name, email, level FROM _mem ORDER BY num ASC");
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <h2>회원 관리</h2>
 <table>
     <tr><th>번호</th><th>아이디</th><th>이름</th><th>이메일</th><th>레벨</th><th>프로필</th><th>관리</th></tr>
-    <?php while($row = mysqli_fetch_assoc($result)) { ?>
+    <?php while($row = $result->fetch_assoc()) {?>
     <tr>
         <td><?=$row['num']?></td>
         <td><?=$row['id']?></td>

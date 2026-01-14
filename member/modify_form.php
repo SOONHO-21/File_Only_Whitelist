@@ -12,10 +12,12 @@
     
     include "../include/db_connect.php";
 
-    $sql = "SELECT * FROM _mem WHERE id='$userid'";
-    $result = mysqli_query($con, $sql);
+    $stmt = $con->prepare("SELECT * FROM _mem WHERE id = ?");
+    $stmt->bind_param('s', $userid);
+    $stmt->execute();
 
-    $row = mysqli_fetch_assoc($result);
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
 
     $id = $row["id"];
     $pass = $row["pass"];

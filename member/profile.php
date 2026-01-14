@@ -1,16 +1,14 @@
 <?php
-    include "../include/session.php";
-
-    if(!$userid) {
-        echo "<script>
-                window.alert('회원 정보수정은 로그인한 사용자만 할 수 있습니다.');
-                history.go(-1);
-            </script>";
+    if (!isset($_GET['user']) || empty($_GET['user'])) {
+        echo "<script>alert('잘못된 접근입니다.'); history.back();</script>";
+        exit;
     }
+
+    $user = $_GET['user'];
     
     include "../include/db_connect.php";
 
-    $sql = "SELECT * FROM _mem WHERE id='$userid'";
+    $sql = "SELECT * FROM _mem WHERE name='$user'";
     $result = mysqli_query($con, $sql);
 
     $row = mysqli_fetch_assoc($result);
@@ -31,7 +29,6 @@
 </script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <body> 
     <h2>프로필</h2>
     <?php if($profile_img) { ?>
@@ -43,7 +40,7 @@
     <ul class="list-group">
         <li class="list-group-item">
             <span class="col1">아이디</span>
-            <span class="col2"><?=$userid?></span>
+            <span class="col2"><?=$id?></span>
         </li>
         <li class="list-group-item">
             <span class="col1">이름</span>
@@ -58,7 +55,7 @@
     <span class="col1">내가 쓴 글</span>
     <br>
     <?php
-        $sql = "SELECT * FROM board WHERE id='$userid' ORDER BY num DESC";
+        $sql = "SELECT * FROM board WHERE id='$id' ORDER BY num DESC";
         $result = mysqli_query($con, $sql);
         while($row = mysqli_fetch_assoc($result)){
             $num = $row["num"];

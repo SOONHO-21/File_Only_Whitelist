@@ -2,13 +2,14 @@
 include "../include/db_connect.php";
 include "admin_check.php";
 
-$sql = "SELECT num, name, subject, regist_day FROM board ORDER BY num DESC";
-$result = mysqli_query($con, $sql);
+$stmt = $con->prepare("SELECT num, name, subject, regist_day FROM board ORDER BY num DESC");
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <h2>게시판 관리</h2>
 <table>
 <tr><th>번호</th><th>제목</th><th>작성자</th><th>등록일</th><th>관리</th></tr>
-<?php while($row = mysqli_fetch_assoc($result)) {?>
+<?php while($row = $result->fetch_assoc()) {?>
 <tr>
     <td><?=$row['num']?></td>
     <td><?=$row['name']?></td>
