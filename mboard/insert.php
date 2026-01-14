@@ -69,8 +69,8 @@
 
     include "../include/db_connect.php";
 
-    $stmt = $con->prepare("INSERT INTO board (id, name, subject, content, is_html, regist_day, file_name, file_type, file_copied) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param('sssssssss', $userid, $username, $subject, $content, $is_html, $regist_day, $upfile_name, $upfile_type, $copied_file_name);
+    $stmt = $con->prepare("INSERT INTO board (id, name, public_id, subject, content, is_html, regist_day, file_name, file_type, file_copied) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('ssssssssss', $userid, $username, $public_id, $subject, $content, $is_html, $regist_day, $upfile_name, $upfile_type, $copied_file_name);
 
     $stmt->execute();
 

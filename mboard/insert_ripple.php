@@ -19,8 +19,8 @@
         exit;   // PHP 스크립트 실행 정지하고 탈출
     }
 
-    $stmt = $con->prepare("INSERT INTO ripple (parent, id, name, content, regist_day) VALUES(?, ?, ?, ?, ?)");
-    $stmt->bind_param('issss', $num, $userid, $username, $ripple_content, $regist_day);
+    $stmt = $con->prepare("INSERT INTO ripple (parent, id, name, public_id, content, regist_day) VALUES(?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('isssss', $num, $userid, $username, $public_id, $ripple_content, $regist_day);
     $stmt->execute();
 
     mysqli_close($con);

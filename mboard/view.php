@@ -81,6 +81,7 @@ function ripple_check_input(){
             $ripple_num = $row_ripple["num"];
             $ripple_id = $row_ripple["id"];
             $ripple_name = $row_ripple["name"];
+            echo $ripple_name;
             $ripple_content = $row_ripple["content"];
 
             $ripple_content = str_replace("\n", "<br>", $ripple_content);

@@ -53,8 +53,10 @@
     <span class="col1">내가 쓴 글</span>
     <br>
     <?php
-        $sql = "SELECT * FROM board WHERE id='$id' ORDER BY num DESC";
-        $result = mysqli_query($con, $sql);
+        $stmt = $con->prepare("SELECT * FROM board WHERE id=? ORDER BY num DESC");
+        $stmt->bind_param("s", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         while($row = mysqli_fetch_assoc($result)){
             $num = $row["num"];
             $subject = $row["subject"];
