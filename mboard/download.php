@@ -2,7 +2,7 @@
     $file_name = $_GET["file_name"];
     $file_type = $_GET["file_type"];
     $file_copied = $_GET["file_copied"];
-    $file_path = "./data/".$file_copied;
+    $file_path = "./data/". DIRECTORY_SEPARATOR .$file_copied;
 
     if(file_exists($file_path)) {
         header("Content-Type: application/octet-stream");

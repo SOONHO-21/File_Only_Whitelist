@@ -5,7 +5,7 @@
     include "../include/db_connect.php";
 
     if(isset($id) && isset($pass)) {
-        $stmt = $con->prepare("SELECT * from _mem WHERE id=?");
+        $stmt = $con->prepare("SELECT * from _mem WHERE id = ?");
         $stmt->bind_param('s', $id);
         $stmt->execute();
         $result = $stmt->get_result();

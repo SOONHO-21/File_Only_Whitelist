@@ -3,8 +3,8 @@
     $page  = isset($_GET['page'])  ? intval($_GET['page']) : 1;	// 기본값 1
 
     include "../include/session.php";
-
     include "../include/db_connect.php";
+
     $stmt = $con->prepare("SELECT * FROM board WHERE num = ?");
     $stmt->bind_param('i', $num);
     $stmt->execute();
@@ -69,13 +69,15 @@ function ripple_check_input(){
                 if(str_contains($file_type, "image"))   // 업로드 파일이 이미지라면
                     echo "<img src='./data/$file_copied' width='660' height='450'>";     // 브라우저상에 이미지 출력
                 
-                echo "▷ 첨부파일 : $file_copied ($file_size Byte) &nbsp;&nbsp;&nbsp;&nbsp; <a href='download.php?file_name=$file_name&file_type=$file_type&file_copied=$file_copied'>$file_copied</a>";
+                echo "▷ 첨부파일 : $file_copied ($file_size Byte) &nbsp;&nbsp;&nbsp;&nbsp; <a href='download.php?file_type=$file_type&file_copied=$file_copied'>$file_copied</a>";
             }
         ?>
     </ul>
     <?php
-        $sql = "SELECT * FROM ripple WHERE parent=$num";
-        $ripple_result = mysqli_query($con, $sql);
+        $stmt = $con->prepare("SELECT * FROM ripple WHERE parent = ?");
+        $stmt->bind_param('i', $num);
+        $stmt->execute();
+        $ripple_result = $stmt->get_result();
 
         while($row_ripple = mysqli_fetch_assoc($ripple_result)) {
             $ripple_num = $row_ripple["num"];

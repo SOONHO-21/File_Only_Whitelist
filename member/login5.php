@@ -7,7 +7,7 @@
     if(isset($id) && isset($pass)) {
         $hash_pw = hash('sha256', $pass);
 
-        $stmt = $con->prepare("SELECT * from _mem WHERE id=?");
+        $stmt = $con->prepare("SELECT * from _mem WHERE id = ?");
         $stmt->bind_param('s', $id);
         $stmt->execute();
 
@@ -31,8 +31,8 @@
         }
         else {
             echo "<script>
-                    window.alert('아이디 혹은 비밀번호가 틀립니다.')
-                    history.go(-1)
+                    window.alert('아이디 혹은 비밀번호가 틀립니다.');
+                    history.go(-1);
                 </script>";
             exit;
         }

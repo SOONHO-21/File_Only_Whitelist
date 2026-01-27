@@ -1,21 +1,10 @@
 <?php
     include "../include/session.php";
-    include "../include/db_connect.php";
-
-    $num = $_GET["num"];
-    $page = $_GET["page"];
-
-    $stmt = $con->prepare("SELECT * FROM board WHERE num = ?");
-    $stmt->bind_param('i', $num);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
 
     if(!$userid) {
         echo "
             <script>
-                alert('게시판 수정은 로그인 후 이용해 주세요!');
+                alert('게시판 글쓰기는 로그인 후 이용해 주세요!');
                 history.go(-1);
             </script>
         ";
@@ -24,17 +13,17 @@
 
     $subject = $_POST["subject"];
     $content = $_POST["content"];
+    $is_html = $_POST['is_html'] ?? 'n';    // HTML 쓰기
 
-    $subject = htmlspecialchars($subject, ENT_QUOTES);
-    
-    $is_html = $_POST['is_html'] ?? 'n';
+    $subject = htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');  // XSS 방어. HTML 특수문자 변환
+
     if($is_html !== 'y'){
-        $content = htmlspecialchars($content, ENT_QUOTES);
+        $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
     }
 
     $regist_day = date("Y-m-d (H:i)");
 
-    $upload_dir = '/var/www/uploads/data/';    // 첨부파일 저장 디렉토리
+    $upload_dir = './data/';    // 첨부파일 저장 디렉토리
     $upload_dir = realpath($upload_dir);
 
     $allowed_Extensions = ['txt', 'jpg', 'jepg', 'webp', 'png', 'hwp', 'pdf', 'docx', 'doc', 'docm']; // 화이트리스트로 허용할 확장자
@@ -72,8 +61,8 @@
             exit;
         }
         else {
-            // 확장자가 블랙리스트에 없고, 파일 사이즈가 10MB이하면 업로드 진행
-            $uploaded_file = $upload_dir.$copied_file_name;
+            // 확장자가 화이트리스트에 있고, 파일 사이즈가 10MB이하면 업로드 진행
+            $uploaded_file = $upload_dir.DIRECTORY_SEPARATOR.$copied_file_name;
             if(!move_uploaded_file($upfile_tmp_name, $uploaded_file)) {
                 echo"
                     <script>
@@ -86,12 +75,15 @@
     }
     else {
         $fileName      = "";
-		$upfile_type      = "";
-		$copied_file_name = "";
+        $upfile_type      = "";
+        $copied_file_name = "";
     }
 
-    $stmt = $con->prepare("UPDATE board SET subject = ?, content = ?, is_html = ?, regist_day = ?, file_name = ?, file_type = ?, file_copied = ? WHERE num = ?");
-    $stmt->bind_param('sssssssi', $subject, $content, $is_html, $regist_day, $fileName, $upfile_type, $copied_file_name, $num);
+    include "../include/db_connect.php";
+
+    $stmt = $con->prepare("INSERT INTO board (id, name, public_id, subject, content, is_html, regist_day, file_name, file_type, file_copied) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('ssssssssss', $userid, $username, $public_id, $subject, $content, $is_html, $regist_day, $fileName, $upfile_type, $copied_file_name);
+
     $stmt->execute();
 
     mysqli_close($con);

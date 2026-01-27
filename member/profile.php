@@ -20,6 +20,7 @@
     $name = $row["name"];
     $email = $row["email"];
     $regist_day = date("Y-m-d (H:i)");
+    $profile_img = $row["profile_img"];
 ?>
 <script>
     function check_id(){    // 아이디 중복 체크

@@ -13,7 +13,7 @@
 
     $csrf_token = $_POST["csrf_token"];
 
-    $stmt = $con->prepare("SELECT pass FROM _mem WHERE id=?");
+    $stmt = $con->prepare("SELECT pass FROM _mem WHERE id = ?");
     $stmt->bind_param('s', $userid);
     $stmt->execute();
 
@@ -37,9 +37,9 @@
     
     $hash_pw = password_hash($pass, PASSWORD_DEFAULT);
 
-    $upload_dir = './profile_upload/';      // 첨부파일 저장 디렉토리
-    $allowed_Extensions = ['jpg', 'png'];   // 화이트리스트로 허용할 확장자
-    $allowed_mime_types = array('image/jpeg', 'image/png', 'image/gif', 'text/plain');
+    $upload_dir = './profile_upload/';    // 프로필 사진파일 저장 디렉토리
+    $allowed_Extensions = ['jpg', 'png', 'jepg']; // 화이트리스트로 허용할 확장자
+    $allowed_mime_types = array('image/jpg', 'image/jpeg', 'image/png');
     $file = $_FILES['profile_img'];
 
     $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));   // 소문자로 파일명 변환 후 확장자 추출
@@ -72,7 +72,7 @@
         else {
             $new_name = $userid."_".time().".".$fileExtension;
             // 확장자가 블랙리스트에 없고, 파일 사이즈가 10MB이하면 업로드 진행
-            $uploaded_file = $upload_dir.$new_name;
+            $uploaded_file = $upload_dir . DIRECTORY_SEPARATOR . $new_name;
             if(move_uploaded_file($upfile_tmp_name, $uploaded_file)) {
                 
             }
@@ -85,7 +85,7 @@
                 exit;
             }
         }
-        $stmt = $con->prepare("UPDATE _mem SET pass = ?, name = ?, email = ?, profile_img = ? WHERE id=?");
+        $stmt = $con->prepare("UPDATE _mem SET pass = ?, name = ?, email = ?, profile_img = ? WHERE id = ?");
         $stmt->bind_param('sssss', $hash_pw, $name, $email, $new_name, $userid);
         $stmt->execute();
     }
